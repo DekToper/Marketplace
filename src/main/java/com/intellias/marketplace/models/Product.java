@@ -1,17 +1,36 @@
 package com.intellias.marketplace.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.lang.Nullable;
 
-@Entity
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity(name = "Product")
+@Table(name = "product")
 public class Product {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     private String name;
     private float price;
+
+    @ManyToMany(mappedBy = "products")
+    @Nullable
+    private List<User> users = new ArrayList<>();
+
+    public Product(String name, float price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public Product() {
+    }
+
+    public List<User> getUsers()
+    {
+        return this.users;
+    }
 
     public int getId() {
         return id;
