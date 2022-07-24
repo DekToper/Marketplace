@@ -1,0 +1,16 @@
+<div th:fragment="modalSelectUser" id="userSelectModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content container" style="max-width: 600px; padding: 0;">
+    <div class="modal-header">
+      <h2>Select User</h2>
+      <span onclick="close()" class="close">&times;</span>
+    </div>
+    <div class="modal-body">
+        <div th:each="el: ${users}" class="alert alert-info mt-2 d-flex justify-content-between hover">
+          <h3 th:text="${el.getFullName()}"></h3>
+          <span>Balance: <span th:text="${el.money}"></span> $</span>
+        </div>
+    </div>
+  </div>
+</div>

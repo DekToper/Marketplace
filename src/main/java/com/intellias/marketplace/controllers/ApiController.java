@@ -1,5 +1,6 @@
 package com.intellias.marketplace.controllers;
 
+import com.intellias.marketplace.models.Order;
 import com.intellias.marketplace.models.Product;
 import com.intellias.marketplace.models.User;
 import com.intellias.marketplace.repo.ProductRepository;
@@ -28,13 +29,6 @@ public class ApiController {
         Product prod = new Product();
         Iterable<Product> products = productRepository.findAll();
         Iterable<User> users = userRepository.findAll();
-        for(Product pd: products){
-           prod = pd;
-           break;
-        }
-        for(User u: users){
-            u.addProduct(prod);
-        }
 
         model.addAttribute("products", products);
         model.addAttribute("users", users);
@@ -79,5 +73,27 @@ public class ApiController {
         Product product = productRepository.findById(id).orElseThrow();
         productRepository.delete(product);
         return "redirect:/products";
+    }
+
+    @PostMapping("/order/{prod_id}/{user_id}")
+    public String postOrder(@PathVariable(value = "prod_id") int prodId,
+                            @RequestParam int userId,
+                            Model model)
+    {
+        Product product = productRepository.findById(prodId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
+        System.out.println(prodId);
+        System.out.println(userId);
+        user.addProduct(product);
+        userRepository.save(user);
+        return "redirect:/products";
+    }
+
+    @PostMapping("/products/{userId}")
+    public String userSelect(@PathVariable(value = "userId") int userId,
+                            Model model)
+    {
+        model.addAttribute("userId", userId);
+        return "/selectUser";
     }
 }

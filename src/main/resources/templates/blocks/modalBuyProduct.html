@@ -1,0 +1,22 @@
+<div th:fragment="modalBuyProduct" id="prodBuyModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content container" style="max-width: 600px; padding: 0;">
+    <div class="modal-header">
+      <h2>Buy Product</h2>
+      <span onclick="close()" class="close">&times;</span>
+    </div>
+      <form action="/order" method="post">
+          <input id="prodId" name="prodId" class="d-none">
+          <input id="userId" name="userId" class="d-none">
+          <div class="modal-body">
+              <div th:each="el: ${products}" class="alert alert-info mt-2 d-flex justify-content-between hover select-btn">
+                  <input th:value="${el.id}" class="d-none">
+                  <h3 th:text="${el.name}"></h3>
+                  <span>Price: <span th:text="${el.price}"></span> $</span>
+              </div>
+          </div>
+          <div th:insert="blocks/modalSelectUser :: modalSelectUser"></div>
+      </form>
+  </div>
+</div>
