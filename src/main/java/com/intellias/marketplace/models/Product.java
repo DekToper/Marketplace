@@ -31,6 +31,7 @@ public class Product {
     {
         return this.users;
     }
+    public void removeUser(User user) {users.remove(user);}
 
     public int getId() {
         return id;

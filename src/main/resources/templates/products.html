@@ -20,6 +20,9 @@
                     <form th:action="'users/' + ${el.id} + '/remove'" method="get">
                         <button type="submit" class="btn btn-danger">Remove</button>
                     </form>
+                    <form th:action="'myproducts/' + ${el.id}" method="get">
+                        <button type="submit" class="btn btn-warning">Detail</button>
+                    </form>
                 </div>
                 <div th:insert="blocks/modalUser :: modalUser"></div>
             </div>
@@ -31,6 +34,9 @@
                     <span>Price: <span th:text="${el.price}"></span> $</span>
                     <form th:action="'products/' + ${el.id} + '/remove'" method="get">
                         <button type="submit" class="btn btn-danger">Remove</button>
+                    </form>
+                    <form th:action="'users/' + ${el.id}" method="get">
+                        <button type="submit" class="btn btn-warning">Detail</button>
                     </form>
                 </div>
                 <div th:insert="blocks/modalProduct :: modalProduct"></div>
@@ -55,6 +61,7 @@
         var prodBtn = document.getElementById("prodBtn");
         var prodBuyBtn = document.getElementById("prodBuyBtn");
         var selectBtn = document.getElementsByClassName("select-btn");
+        var selectUsrBtn = document.getElementsByClassName("select-usr-btn");
 
         // When the user clicks the button, open the modal
         btn.onclick = function() {
@@ -69,11 +76,27 @@
 
         Array.prototype.forEach.call(selectBtn, function(el) {
             el.onclick = function(event) {
-                userModal.style.display = "block";
                 var prodId = document.getElementById("prodId");
-                prodId.value = el.firstChild.value;
+                 Array.prototype.forEach.call(selectBtn, function(el) {
+                    el.style.opacity = 1;
+                 });
+                el.style.opacity = '0.5';
                 for (let i = 0; i < el.children.length; i++) {
-                  prodId.value = el.children[i].defaultValue;
+                  prodId.setAttribute('value', el.children[i].defaultValue);
+                  break;
+                }
+            }
+        });
+
+        Array.prototype.forEach.call(selectUsrBtn, function(el) {
+            el.onclick = function(event) {
+                var userId = document.getElementById("userId");
+                 Array.prototype.forEach.call(selectUsrBtn, function(el) {
+                    el.style.opacity = 1;
+                 });
+                el.style.opacity = '0.5';
+                for (let i = 0; i < el.children.length; i++) {
+                  userId.setAttribute('value', el.children[i].defaultValue);
                   break;
                 }
             }
@@ -85,7 +108,6 @@
           modal.style.display = "none";
           prodModal.style.display = "none";
           prodBuyModal.style.display = "none";
-          userSelectModal.style.display = "none";
         }
 
         // When the user clicks anywhere outside of the modal, close it
@@ -97,9 +119,6 @@
             prodModal.style.display = "none";
           }
           else if (event.target == prodBuyModal) {
-            prodBuyModal.style.display = "none";
-          }
-          else if (event.target == userSelectModal) {
             prodBuyModal.style.display = "none";
           }
         }

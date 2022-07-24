@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import java.awt.color.ProfileDataException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -36,6 +37,7 @@ public class ApiController {
         return "products";
     }
 
+
     @PostMapping("/users/post")
     public String userPost(@RequestParam String firstName,
                               @RequestParam String lastName,
@@ -52,8 +54,46 @@ public class ApiController {
                                 Model model)
     {
         User user = userRepository.findById(id).orElseThrow();
+        assert user.getProducts() != null;
+        for (Product p: user.getProducts()) {
+            p.removeUser(user);
+        }
         userRepository.delete(user);
         return "redirect:/products";
+    }
+
+    @GetMapping("/myproducts/{id}")
+    public String userDetail(@PathVariable(value = "id") int id,
+                             Model model)
+    {
+        User user = userRepository.findById(id).orElseThrow();
+        return "redirect:/myproducts/show/" + id;
+    }
+
+    @GetMapping("/myproducts/show/{id}")
+    public String myProducts(@PathVariable(value = "id") int id,
+                             Model model)
+    {
+        User user = userRepository.findById(id).orElseThrow();
+        model.addAttribute("myProducts", user.getProducts());
+        return "myproducts";
+    }
+
+    @GetMapping("/users/{id}")
+    public String productDetail(@PathVariable(value = "id") int id,
+                             Model model)
+    {
+        Product prod = productRepository.findById(id).orElseThrow();
+        return "redirect:/users/show/" + id;
+    }
+
+    @GetMapping("/users/show/{id}")
+    public String userList(@PathVariable(value = "id") int id,
+                             Model model)
+    {
+        Product prod = productRepository.findById(id).orElseThrow();
+        model.addAttribute("users", prod.getUsers());
+        return "users";
     }
 
     @PostMapping("/products/post")
@@ -71,29 +111,27 @@ public class ApiController {
                              Model model)
     {
         Product product = productRepository.findById(id).orElseThrow();
+        assert product.getUsers() != null;
+        for (User user: product.getUsers()) {
+            user.removeProduct(product);
+        }
         productRepository.delete(product);
         return "redirect:/products";
     }
-
-    @PostMapping("/order/{prod_id}/{user_id}")
-    public String postOrder(@PathVariable(value = "prod_id") int prodId,
-                            @RequestParam int userId,
-                            Model model)
+    @PostMapping("/order")
+    public String userSelect(@RequestParam int userId,
+                             @RequestParam int  prodId,
+                             Model model)
     {
+        System.out.println(userId);
+        System.out.println(prodId);
         Product product = productRepository.findById(prodId).orElseThrow();
         User user = userRepository.findById(userId).orElseThrow();
+        user.setMoney(user.getMoney()-product.getPrice());
         System.out.println(prodId);
         System.out.println(userId);
         user.addProduct(product);
         userRepository.save(user);
         return "redirect:/products";
-    }
-
-    @PostMapping("/products/{userId}")
-    public String userSelect(@PathVariable(value = "userId") int userId,
-                            Model model)
-    {
-        model.addAttribute("userId", userId);
-        return "/selectUser";
     }
 }

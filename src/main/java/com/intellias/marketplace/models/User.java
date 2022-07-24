@@ -47,8 +47,7 @@ public class User {
     }
 
     public void removeProduct(Product product) {
-        this.products.add(product);
-        product.getUsers().remove(this);
+        this.products.remove(product);
     }
 
     public String getFirstName() {
