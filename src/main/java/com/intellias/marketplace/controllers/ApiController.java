@@ -118,6 +118,7 @@ public class ApiController {
         productRepository.delete(product);
         return "redirect:/products";
     }
+
     @PostMapping("/order")
     public String userSelect(@RequestParam int userId,
                              @RequestParam int  prodId,
@@ -127,7 +128,14 @@ public class ApiController {
         System.out.println(prodId);
         Product product = productRepository.findById(prodId).orElseThrow();
         User user = userRepository.findById(userId).orElseThrow();
-        user.setMoney(user.getMoney()-product.getPrice());
+        float sum = user.getMoney()-product.getPrice();
+        if(sum < 0)
+        {
+            model.addAttribute("alert", "Sorry, but you don't have enough money");
+            return "exception";
+        }
+        else
+            user.setMoney(sum);
         System.out.println(prodId);
         System.out.println(userId);
         user.addProduct(product);
